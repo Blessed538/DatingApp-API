@@ -9,9 +9,12 @@ using Microsoft.Extensions.Logging;
 
 namespace DatingApp.API.Controllers
 {
-  [ApiController]
+ 
   //GET http://localhost:5000/api/weatherforecast
+
+  
   [Route("api/[controller]")]
+   [ApiController]
   public class WeatherForecastController : ControllerBase
   {
     private readonly DataContext _context;
