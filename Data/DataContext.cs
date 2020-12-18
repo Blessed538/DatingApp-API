@@ -10,5 +10,6 @@ namespace DatingApp.API.Data
     public DbSet<WeatherForecast> Weathers { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Weather> Weather { get; internal set; }
+    public DbSet<Photo> Photos {get; set;}
   }
 }
