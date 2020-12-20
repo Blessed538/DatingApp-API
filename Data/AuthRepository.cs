@@ -8,23 +8,23 @@ namespace DatingApp.API.Data
 {
   public class AuthRepository : IAuthRepository
   {
-    private readonly  DataContext _context; 
+    private readonly DataContext _context;
 
 
     public AuthRepository(DataContext context)
     {
       _context = context;
-        
+
     }
     public async Task<User> Login(string username, string password)
     {
-      var user = await _context.Users.Where(x => x.username == username);
+      var user = await _context.Users.FirstOrDefaultAsync(x => x.username == username);
 
       if (user == null)
-      return null;
+        return null;
 
-      if(!VerifyPasswordHash(password, user.PasswordSalt))
-      return null;
+      if (!VerifyPasswordHash(password, user.PasswordSalt))
+        return null;
 
       return user;
     }
@@ -34,9 +34,9 @@ namespace DatingApp.API.Data
       using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
       {
         var ComputedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-        for (int i =0; i < ComputedHash.Length; i++)
+        for (int i = 0; i < ComputedHash.Length; i++)
         {
-          if (ComputedHash[i] != passwordSalt[i]) return false; 
+          if (ComputedHash[i] != passwordSalt[i]) return false;
         }
       }
       return true;
@@ -58,17 +58,17 @@ namespace DatingApp.API.Data
 
     private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
     {
-     using (var hmac = new System.Security.Cryptography.HMACSHA512())
-     {
-       passwordSalt = hmac.Key;
-       passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));  
-     } 
+      using (var hmac = new System.Security.Cryptography.HMACSHA512())
+      {
+        passwordSalt = hmac.Key;
+        passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+      }
     }
 
     public async Task<bool> UserExists(string username)
     {
-      if (await _context.Users.AnyAsync(x => x.Username == username))
-      return true;
+      if (await _context.Users.AnyAsync(x => x.username == username))
+        return true;
 
       return false;
     }
